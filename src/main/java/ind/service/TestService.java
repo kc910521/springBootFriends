@@ -2,9 +2,12 @@ package ind.service;
 
 import ind.domains.Hero;
 import ind.repository.TestRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author BJQXDN0626
@@ -17,9 +20,8 @@ public class TestService {
 
     private final TestRepository testRepository;
 
-    public TestService(ElasticsearchTemplate template, TestRepository testRepository) {
-        this.template = template;
-        this.testRepository = testRepository;
+    public List<Hero> listHeros() {
+        return testRepository.findAll(Pageable.unpaged()).getContent();
     }
 
     public void testES(String name) {
@@ -41,4 +43,8 @@ public class TestService {
         return hr;
     }
 
+    public TestService(ElasticsearchTemplate template, TestRepository testRepository) {
+        this.template = template;
+        this.testRepository = testRepository;
+    }
 }
