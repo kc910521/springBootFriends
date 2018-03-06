@@ -1,9 +1,11 @@
-package ind.controller;
+package ind.ck.controller;
 
+import ind.ck.entity.User;
+import ind.ck.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author BJQXDN0626
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Controller
 public class TestController {
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping("/")
     public String root() {
         return "redirect:/index";
@@ -19,6 +24,7 @@ public class TestController {
 
     @RequestMapping("/index")
     public String index() {
+        System.out.println("dd:" + userService.findAll());
         return "index";
     }
 
@@ -35,6 +41,9 @@ public class TestController {
     @RequestMapping("/login-error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
+        User user = new User();
+        user.setName("wwccss");
+        userService.create(user);
         return "login";
     }
 }
