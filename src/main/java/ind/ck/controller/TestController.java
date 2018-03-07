@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author BJQXDN0626
@@ -25,6 +26,13 @@ public class TestController {
     @RequestMapping("/index")
     public String index() {
         System.out.println("dd:" + userService.findAll());
+        return "index";
+    }
+
+    @RequestMapping("/ping")
+    @ResponseBody
+    public String ping() {
+        userService.aclTry();
         return "index";
     }
 

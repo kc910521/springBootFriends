@@ -16,6 +16,9 @@ spring:
       ddl-auto: update
     show-sql: true
     database: default
+  cache:
+    ehcache:
+      config: ehcache.xml
 server:
   port: 9522
 spring:
@@ -29,3 +32,4 @@ app:
     maximum-pool-size: 30
 jpa:
   show-sql: true
+
