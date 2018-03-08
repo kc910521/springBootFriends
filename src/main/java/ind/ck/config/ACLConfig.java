@@ -84,6 +84,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
 //        service.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
         //only 4 mysql
         service.setClassIdentityQuery("SELECT @@IDENTITY");
+        // 查询刚刚新增的acl_class的主键的SQL
         service.setSidIdentityQuery("SELECT @@IDENTITY");
         return service;
     }
