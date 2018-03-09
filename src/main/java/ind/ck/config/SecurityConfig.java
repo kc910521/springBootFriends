@@ -36,7 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login","/login/form**","/register","/logout","/rest/users/login","/public", "/index").permitAll() // #4
+                .antMatchers("/login","/login/form**","/register",
+                        "/logout","/rest/users/login",
+                        "/css/**",
+                        "/public", "/index", "/resources/**").permitAll() // #4
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN") // #6
                 .anyRequest().authenticated() // 7
                 .and().addFilterBefore(authenticationFilter(),UsernamePasswordAuthenticationFilter.class)
@@ -77,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //		sra.setDefaultTargetUrl();
         //		authFilter.setAuthenticationSuccessHandler(sra);
         //you must set FailureHandler but loss SuccessHandler is acceptable,why?
-        authFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/login/form?error"));
+        authFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/login?loginError"));
         authFilter.setUsernameParameter("username");
         authFilter.setPasswordParameter("password");
         return authFilter;
