@@ -10,5 +10,7 @@
 * urule2
   > 规则引擎
 * security_acl 
-  > 整合spring security,自定义验证等，集成spring security acl，数据范围权限demo
+  > 整合spring security进行自定义验证等
+  > 配置spring security acl实现数据范围权限demo
+  > jpa支持
 
