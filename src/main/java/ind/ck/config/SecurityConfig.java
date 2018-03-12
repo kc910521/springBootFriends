@@ -84,13 +84,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //		sra.setDefaultTargetUrl();
         //		authFilter.setAuthenticationSuccessHandler(sra);
         //you must set FailureHandler but loss SuccessHandler is acceptable,why?
-        ExceptionMappingAuthenticationFailureHandler exceptionMappingAuthenticationFailureHandler = new ExceptionMappingAuthenticationFailureHandler();
-        Map<String, String> failureUrlMap = new HashMap<String, String>();
-        failureUrlMap.put("AuthenticationServiceException", "");
-        failureUrlMap.put("", "");
-        exceptionMappingAuthenticationFailureHandler.setExceptionMappings(failureUrlMap);
+//        ExceptionMappingAuthenticationFailureHandler exceptionMappingAuthenticationFailureHandler = new ExceptionMappingAuthenticationFailureHandler();
+//        Map<String, String> failureUrlMap = new HashMap<String, String>();
+//        failureUrlMap.put("AuthenticationServiceException", "/login/form?error");
+//        exceptionMappingAuthenticationFailureHandler.setExceptionMappings(failureUrlMap);
 
-        authFilter.setAuthenticationFailureHandler(exceptionMappingAuthenticationFailureHandler);
+        authFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler());
         //new SimpleUrlAuthenticationFailureHandler("/login-error")
         authFilter.setUsernameParameter("username");
         authFilter.setPasswordParameter("password");

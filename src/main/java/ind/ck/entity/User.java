@@ -42,6 +42,8 @@ public class User
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="user_id")
 	private Set<Role> roles = new HashSet<>();
+	@Column(columnDefinition = "text")
+	private String extra;
 	
 	public User() {
 	}
@@ -67,6 +69,14 @@ public class User
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email
 				+ ", dob=" + dob + ", sexual=" + sexual + "]";
+	}
+
+	public String getExtra() {
+		return extra;
+	}
+
+	public void setExtra(String extra) {
+		this.extra = extra;
 	}
 
 	public int getId() {
