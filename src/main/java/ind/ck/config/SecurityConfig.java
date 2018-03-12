@@ -10,9 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author BJQXDN0626
@@ -38,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login","/login/form**","/register",
                         "/logout","/rest/users/login",
-                        "/css/**",
+                        "/css/**", "/login-error",
                         "/public", "/index", "/resources/**").permitAll() // #4
                 .antMatchers("/admin","/admin/**").hasRole("ADMIN") // #6
                 .anyRequest().authenticated() // 7
@@ -80,7 +84,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //		sra.setDefaultTargetUrl();
         //		authFilter.setAuthenticationSuccessHandler(sra);
         //you must set FailureHandler but loss SuccessHandler is acceptable,why?
-        authFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler("/login?loginError"));
+        ExceptionMappingAuthenticationFailureHandler exceptionMappingAuthenticationFailureHandler = new ExceptionMappingAuthenticationFailureHandler();
+        Map<String, String> failureUrlMap = new HashMap<String, String>();
+        failureUrlMap.put("AuthenticationServiceException", "");
+        failureUrlMap.put("", "");
+        exceptionMappingAuthenticationFailureHandler.setExceptionMappings(failureUrlMap);
+
+        authFilter.setAuthenticationFailureHandler(exceptionMappingAuthenticationFailureHandler);
+        //new SimpleUrlAuthenticationFailureHandler("/login-error")
         authFilter.setUsernameParameter("username");
         authFilter.setPasswordParameter("password");
         return authFilter;

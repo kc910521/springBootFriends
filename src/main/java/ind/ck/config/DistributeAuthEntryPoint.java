@@ -23,7 +23,7 @@ public class DistributeAuthEntryPoint extends LoginUrlAuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String requestType = request.getHeader("X-Requested-With");
         if ("XMLHttpRequest".equals(requestType)){
-            response.getWriter().write("{\"code\":8}");
+            response.getWriter().write("{\"code\":403}");
         }else{
             super.commence(request, response, authException);
         }
