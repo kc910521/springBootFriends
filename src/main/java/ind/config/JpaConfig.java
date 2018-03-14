@@ -1,5 +1,6 @@
 package ind.config;
 
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -7,5 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @create 2018/3/1
  */
 @EnableJpaRepositories
+@EnableElasticsearchRepositories(basePackages = "ind.repository")
 public class JpaConfig {
 }

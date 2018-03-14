@@ -4,6 +4,7 @@ package ind.repository;
 import org.springframework.data.repository.Repository;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -14,6 +15,8 @@ public interface CrudRepository <T, ID extends Serializable>
         extends Repository<T, ID> {
 
     <S extends T> S save(S entity);
+
+//    <S extends T> int save(Collection<S> entities);//批量保存
 
     Optional<T> findById(ID primaryKey);
 

@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author BJQXDN0626
@@ -39,7 +40,8 @@ public class TestService {
     private Hero getObject(String name){
         Hero hr = new Hero();
         hr.setId(System.currentTimeMillis());
-        hr.setName(name);
+//        hr.setName(name);
+        hr.setContent(UUID.randomUUID().toString());
         return hr;
     }
 
