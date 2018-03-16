@@ -48,6 +48,17 @@
             <artifactId>jackson-core</artifactId>
         </dependency>
         <!--<dependency>-->
+            <!--<groupId>com.github.romewing</groupId>-->
+            <!--<artifactId>webmagic-spring-boot-autoconfigure</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>us.codecraft</groupId>
+            <artifactId>webmagic-core</artifactId>
+            <version>0.6.1</version>
+        </dependency>
+
+        <!--<dependency>-->
             <!--<groupId>net.java.dev.jna</groupId>-->
             <!--<artifactId>jna</artifactId>-->
             <!--<version>3.0.9</version>-->
