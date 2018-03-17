@@ -3,10 +3,7 @@ package ind.controller;
 import ind.domains.Ci;
 import ind.service.CiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -31,7 +28,12 @@ public class CiController {
 
     @RequestMapping(value = "/mis/count")
     public String countMissingCi(){
-        return ciService.verifyCi();
+        return ciService.verifyCi(null);
+    }
+
+    @PutMapping(value = "/mis/fix")
+    public String fixInEs(){
+        return ciService.verifyCi(ciService);
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -43,5 +45,10 @@ public class CiController {
             e.printStackTrace();
         }
         return "wtf?";
+    }
+
+    @PostMapping("/es/to/file")
+    public void saveToFile(){
+        ciService.outputJSONFromES();
     }
 }

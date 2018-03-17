@@ -1,5 +1,7 @@
 package ind.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ind.domains.Ci;
@@ -15,11 +17,9 @@ import us.codecraft.webmagic.Spider;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author BJQXDN0626
@@ -33,13 +33,67 @@ public class CiService {
 
     int a = 1;
 
+    public void putParasData(String id,List<String> parContent){
+        Optional<Ci> ciOptional = ciRepository.findById(id);
+        if (ciOptional.isPresent()){
+            Ci ci = ciOptional.get();
+            ciRepository.deleteById(id);
+            ci.setParagraphs(parContent);
+            ciRepository.save(ci);
+        }
+    }
+
     public List<Ci> findByParas(@NotNull String str){
 //        List<String> strings = new LinkedList<>();
 //        strings.add(str);
         return ciRepository.findAllByParagraphsMatches(str);
     }
 
-    public String verifyCi(){
+    public void outputJSONFromES(){
+        Iterable<Ci> ciIterable = ciRepository.findAll();
+        JSONArray jsonArray = new JSONArray();
+        //FIX:keyouhua
+        ciIterable.forEach(ci -> {
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(ci);
+            jsonObject.remove("id");
+            jsonArray.add(jsonObject);
+        });
+        WriteConfigJson(jsonArray.toJSONString());
+    }
+    // justcopy
+    private void WriteConfigJson(String args) {
+        String src = "C:\\Users\\BJQXDN0626\\Downloads\\chinese-poetry-master\\chinese-poetry-master\\ci\\cixx\\ci.0.json";
+
+        File file = new File(src);
+
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        try {
+            file.delete();
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(file, true);
+            fw.write(args);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public String verifyCi(CiService ciService){
+        CiPipeLine.missCiIds.clear();
         Iterable<Ci> iterator = ciRepository.findAll();
         iterator.forEach(ci -> {
             // TODO:可优化少去一次异常字符
@@ -47,7 +101,7 @@ public class CiService {
             int ctc = CiPipeLine.countChar(ci.getParagraphs());
             Spider.create(new CiPageProcessor())
                     .addUrl(url)
-                    .addPipeline(new CiPipeLine(ci.getId() , ctc))
+                    .addPipeline(new CiPipeLine(ci.getId(), ctc, ciService))
                     .thread(5)
                     .run();
 
@@ -99,14 +153,5 @@ public class CiService {
         }
         return -1;
     }
-
-//    public static void main(String[] args) {
-//        List<String> sts = new LinkedList<>();
-//        sts.add("罗绮满城春欲暮。");
-//        sts.add("百花洲上寻芳去。");
-//        sts.add("海霞红，");
-//        sts.add("山烟翠！");
-//        System.out.println(assembleUrl(sts));
-//    }
 
 }
