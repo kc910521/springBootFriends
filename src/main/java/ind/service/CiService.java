@@ -11,6 +11,7 @@ import ind.vmcomp.CiPipeLine;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Spider;
@@ -33,9 +34,9 @@ public class CiService {
 
     int a = 1;
 
-    public void putParasData(String id,List<String> parContent){
+    public void putParasData(String id, List<String> parContent) {
         Optional<Ci> ciOptional = ciRepository.findById(id);
-        if (ciOptional.isPresent()){
+        if (ciOptional.isPresent()) {
             Ci ci = ciOptional.get();
             ciRepository.deleteById(id);
             ci.setParagraphs(parContent);
@@ -43,23 +44,24 @@ public class CiService {
         }
     }
 
-    public List<Ci> findByParas(@NotNull String str){
-//        List<String> strings = new LinkedList<>();
-//        strings.add(str);
+    public List<Ci> findByParas(@NotNull String str) {
+        //        List<String> strings = new LinkedList<>();
+        //        strings.add(str);
         return ciRepository.findAllByParagraphsMatches(str);
     }
 
-    public void outputJSONFromES(){
-        Iterable<Ci> ciIterable = ciRepository.findAll();
+    public void outputJSONFromES() {
+        Iterable<Ci> ciIterable = ciRepository.findAll(Sort.by(Sort.Order.asc("id.keyword")));
         JSONArray jsonArray = new JSONArray();
         //FIX:keyouhua
         ciIterable.forEach(ci -> {
             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(ci);
-            jsonObject.remove("id");
+//            jsonObject.remove("id");
             jsonArray.add(jsonObject);
         });
         WriteConfigJson(jsonArray.toJSONString());
     }
+
     // justcopy
     private void WriteConfigJson(String args) {
         String src = "C:\\Users\\BJQXDN0626\\Downloads\\chinese-poetry-master\\chinese-poetry-master\\ci\\cixx\\ci.0.json";
@@ -82,7 +84,7 @@ public class CiService {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 fw.close();
             } catch (IOException e) {
@@ -92,18 +94,14 @@ public class CiService {
 
     }
 
-    public String verifyCi(CiService ciService){
+    public String verifyCi(CiService ciService) {
         CiPipeLine.missCiIds.clear();
         Iterable<Ci> iterator = ciRepository.findAll();
         iterator.forEach(ci -> {
             // TODO:可优化少去一次异常字符
             String url = assembleUrl(ci.getParagraphs());
             int ctc = CiPipeLine.countChar(ci.getParagraphs());
-            Spider.create(new CiPageProcessor())
-                    .addUrl(url)
-                    .addPipeline(new CiPipeLine(ci.getId(), ctc, ciService))
-                    .thread(5)
-                    .run();
+            Spider.create(new CiPageProcessor()).addUrl(url).addPipeline(new CiPipeLine(ci.getId(), ctc, ciService)).thread(5).run();
 
         });
         try {
@@ -116,9 +114,9 @@ public class CiService {
         return CiPipeLine.missCiIds.toString();
     }
 
-    private static String assembleUrl(List<String> pas){
+    private static String assembleUrl(List<String> pas) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (pas != null){
+        if (pas != null) {
             pas.stream().limit(3).forEach(s -> {
                 stringBuilder.append(CiPipeLine.clearChar(s) + "%20");
             });
@@ -128,22 +126,22 @@ public class CiService {
     }
 
     public int loadFromFiles(String absDirPath) throws IOException {
-        Collection<File> files = FileUtils.listFiles(new File(absDirPath),
-                FileFilterUtils.suffixFileFilter("json"), null);
-        if (files != null && !files.isEmpty()){
+        Collection<File> files = FileUtils.listFiles(new File(absDirPath), FileFilterUtils.suffixFileFilter("json"), null);
+        if (files != null && !files.isEmpty()) {
             files.stream().forEach(file -> {
-                if (file.isFile() && file.exists() && file.getName().startsWith("ci.song")){
+                if (file.isFile() && file.exists() && file.getName().startsWith("ci.song")) {
                     System.out.println(file.getName());
                     ObjectMapper mapper = new ObjectMapper();
                     List<Ci> cis = null;
                     try {
-                        cis = mapper.readValue(file, new TypeReference<List<Ci>> (){});
+                        cis = mapper.readValue(file, new TypeReference<List<Ci>>() {
+                        });
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     cis.stream().forEach(ci -> {
-                        ci.setId("ci_"+(a++));
+                        ci.setId("ci_" + String.format("%06d", a++));
                         System.out.println(a);
                     });
                     ciRepository.saveAll(cis);
