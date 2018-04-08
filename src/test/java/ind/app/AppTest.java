@@ -26,7 +26,7 @@ public class AppTest {
     }
 
     @Test
-    public void andSave(){
+    public void load(){
         try {
             int res = ciService.loadFromFiles("C:\\Users\\BJQXDN0626\\Downloads\\chinese-poetry-master\\chinese-poetry-master\\ci\\cix");
         } catch (IOException e) {

@@ -56,7 +56,7 @@ public class CiService {
         //FIX:keyouhua
         ciIterable.forEach(ci -> {
             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(ci);
-//            jsonObject.remove("id");
+            jsonObject.remove("id");
             jsonArray.add(jsonObject);
         });
         WriteConfigJson(jsonArray.toJSONString());
