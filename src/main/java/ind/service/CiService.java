@@ -2,10 +2,12 @@ package ind.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ind.domains.Ci;
 import ind.repository.CiRepository;
+import ind.util.JsonFormatTool;
 import ind.vmcomp.CiPageProcessor;
 import ind.vmcomp.CiPipeLine;
 import org.apache.commons.io.FileUtils;
@@ -59,7 +61,7 @@ public class CiService {
             jsonObject.remove("id");
             jsonArray.add(jsonObject);
         });
-        WriteConfigJson(jsonArray.toJSONString());
+        WriteConfigJson(JsonFormatTool.formatJson(jsonArray.toJSONString()));
     }
 
     // justcopy
