@@ -20,10 +20,7 @@ public class AppTest {
     @Autowired
     private CiService ciService;
 
-    @Test
-    public void outputFile(){
-        ciService.outputJSONFromES();
-    }
+
 
     @Test
     public void load(){
@@ -39,5 +36,10 @@ public class AppTest {
         ciService.verifyCi(ciService);
     }
 
-
+    @Test
+    public void outputFile(){
+        ciService.outputJSONFromES();
+    }
 }
+
+
