@@ -77,7 +77,7 @@ public class JsonFormatTool {
                 result.append(key);
 
                 // （4）如果当前字符后面还有字符，并且字符不为“，”，打印：换行。
-                if (((i + 1) < length) && (json.charAt(i + 1) != ',')) {
+                if ((key != ']') && ((i + 1) < length) && (json.charAt(i + 1) != ',')) {
                     result.append('\n');
                 }
 
@@ -88,6 +88,7 @@ public class JsonFormatTool {
             // 4、如果当前字符是逗号。逗号后面换行，并缩进，不改变缩进次数。
             if ((key == ',')) {
                 result.append(key);
+                result.append(' ');
                 result.append('\n');
                 result.append(indent(number));
                 continue;

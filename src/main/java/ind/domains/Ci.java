@@ -24,6 +24,8 @@ public class Ci {
 
     private String rhythmic;//  xingshi
 
+    private List<String> tags;
+
     public String getId() {
         return id;
     }
@@ -54,5 +56,13 @@ public class Ci {
 
     public void setRhythmic(String rhythmic) {
         this.rhythmic = rhythmic;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }
