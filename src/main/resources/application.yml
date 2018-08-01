@@ -1,3 +1,6 @@
 spring:
 server:
   port: 9522
+camel:
+  springboot:
+    main-run-controller: true

@@ -15,4 +15,10 @@ public class TestController {
 
         return "Greetings from Spring Boot!";
     }
+
+    @RequestMapping("/ping")
+    public String ping() {
+
+        return "Gauls Nobleman";
+    }
 }
