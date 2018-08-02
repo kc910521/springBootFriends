@@ -25,7 +25,7 @@ public class AppTest {
     @Test
     public void load(){
         try {
-            int res = ciService.loadFromFiles("C:\\Users\\BJQXDN0626\\Downloads\\chinese-poetry-master\\chinese-poetry-master\\ci\\cix");
+            int res = ciService.loadFromFiles("D:\\repo\\chinese-poetry\\ci");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -33,12 +33,12 @@ public class AppTest {
 
     @Test
     public void fix(){
-        ciService.verifyCi(ciService);
+        ciService.verifyCi(ciService, 2, 1000);
     }
 
     @Test
     public void outputFile(){
-        ciService.outputJSONFromES();
+        ciService.outputJSONFromES(2, 1000);
     }
 }
 

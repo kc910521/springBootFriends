@@ -27,19 +27,19 @@ public class CiController {
     }
 
     @RequestMapping(value = "/mis/count")
-    public String countMissingCi(){
-        return ciService.verifyCi(null);
+    public String countMissingCi(@RequestParam Integer page, @RequestParam Integer pageSize){
+        return ciService.verifyCi(null, page, pageSize);
     }
 
     @PutMapping(value = "/mis/fix")
-    public String fixInEs(){
-        return ciService.verifyCi(ciService);
+    public String fixInEs(@RequestParam Integer page, @RequestParam Integer pageSize){
+        return ciService.verifyCi(ciService, page, pageSize);
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String saveCi(){
         try {
-            int res = ciService.loadFromFiles("C:\\Users\\BJQXDN0626\\Downloads\\chinese-poetry-master\\chinese-poetry-master\\ci\\cix");
+            int res = ciService.loadFromFiles("D:\\repo\\chinese-poetry\\ci");
             return res + "";
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +48,7 @@ public class CiController {
     }
 
     @PostMapping("/es/to/file")
-    public void saveToFile(){
-        ciService.outputJSONFromES();
+    public void saveToFile(@RequestParam Integer page, @RequestParam Integer pageSize){
+        ciService.outputJSONFromES(page, pageSize);
     }
 }

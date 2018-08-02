@@ -13,7 +13,10 @@ import ind.vmcomp.CiPipeLine;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Spider;
@@ -52,21 +55,24 @@ public class CiService {
         return ciRepository.findAllByParagraphsMatches(str);
     }
 
-    public void outputJSONFromES() {
-        Iterable<Ci> ciIterable = ciRepository.findAll(Sort.by(Sort.Order.asc("id.keyword")));
+    public void outputJSONFromES(int page, int pageSize) {
+        QPageRequest qPageRequest = new QPageRequest(page ,pageSize);
+        qPageRequest.getSortOr(Sort.by(Sort.Order.asc("id.keyword")));
+        Page<Ci> pag = ciRepository.findAll(qPageRequest);
+//        Iterable<Ci> ciIterable = ciRepository.findAll();
         JSONArray jsonArray = new JSONArray();
         //FIX:keyouhua
-        ciIterable.forEach(ci -> {
+        pag.getContent().forEach(ci -> {
             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(ci);
             jsonObject.remove("id");
             jsonArray.add(jsonObject);
         });
-        WriteConfigJson(JsonFormatTool.formatJson(jsonArray.toJSONString()));
+        WriteConfigJson(JsonFormatTool.formatJson(jsonArray.toJSONString()), ((page - 1) * pageSize) + "" );
     }
 
     // justcopy
-    private void WriteConfigJson(String args) {
-        String src = "C:\\Users\\BJQXDN0626\\Downloads\\chinese-poetry-master\\chinese-poetry-master\\ci\\cixx\\ci.0.json";
+    private void WriteConfigJson(String args, String namePart) {
+        String src = "D:\\repo\\chinese-poetry\\ci\\cix\\ci." + namePart + ".json";
 
         File file = new File(src);
 
@@ -96,10 +102,12 @@ public class CiService {
 
     }
 
-    public String verifyCi(CiService ciService) {
+    public String verifyCi(CiService ciService, int page, int pageSize) {
         CiPipeLine.missCiIds.clear();
-        Iterable<Ci> iterator = ciRepository.findAll();
-        iterator.forEach(ci -> {
+        QPageRequest qPageRequest = new QPageRequest(page ,pageSize);
+        qPageRequest.getSortOr(Sort.by(Sort.Order.asc("id.keyword")));
+        Page<Ci> pag = ciRepository.findAll(qPageRequest);
+        pag.getContent().forEach(ci -> {
             // TODO:可优化少去一次异常字符
             String url = assembleUrl(ci.getParagraphs());
             int ctc = CiPipeLine.countChar(ci.getParagraphs());
