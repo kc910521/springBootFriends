@@ -1,6 +1,8 @@
 package ind.repository;
 
 import ind.domains.Ci;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;
@@ -14,5 +16,7 @@ public interface CiRepository extends ElasticsearchRepository<Ci, String> {
     List<Ci> findAllByParagraphsMatches(String paragraphs);
 
     List<Ci> findAllByIdIsLessThan(String maxId);
+
+    Page<Ci> findByFromFileIndexEqualsOrderByOCodeAsc(String fromFileIndex, Pageable pageable);
 
 }

@@ -3,6 +3,8 @@ package ind.domains;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.annotation.Generated;
 import java.util.List;
@@ -18,6 +20,9 @@ public class Ci {
     @Id
     private String id;
 
+    @Field(type = FieldType.keyword)
+    private String oCode;
+
     private String author;
 
     private List<String> paragraphs;
@@ -25,6 +30,9 @@ public class Ci {
     private String rhythmic;//  xingshi
 
     private List<String> tags;
+
+    @Field(type = FieldType.keyword)
+    private String fromFileIndex;
 
     public String getId() {
         return id;
@@ -64,5 +72,21 @@ public class Ci {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public String getFromFileIndex() {
+        return fromFileIndex;
+    }
+
+    public void setFromFileIndex(String fromFileIndex) {
+        this.fromFileIndex = fromFileIndex;
+    }
+
+    public String getoCode() {
+        return oCode;
+    }
+
+    public void setoCode(String oCode) {
+        this.oCode = oCode;
     }
 }

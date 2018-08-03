@@ -26,14 +26,14 @@ public class CiController {
         return ciService.findByParas(str);
     }
 
-    @RequestMapping(value = "/mis/count")
-    public String countMissingCi(@RequestParam Integer page, @RequestParam Integer pageSize){
-        return ciService.verifyCi(null, page, pageSize);
+    @RequestMapping(value = "/{fromIndex}/mis/count")
+    public String countMissingCi(@RequestParam Integer page, @RequestParam Integer pageSize, @PathVariable String fromIndex){
+        return ciService.verifyCi(null, fromIndex, page, pageSize);
     }
 
-    @PutMapping(value = "/mis/fix")
-    public String fixInEs(@RequestParam Integer page, @RequestParam Integer pageSize){
-        return ciService.verifyCi(ciService, page, pageSize);
+    @PutMapping(value = "/mis/fix/{fromIndex}")
+    public String fixInEs(@RequestParam Integer page, @RequestParam Integer pageSize, @PathVariable String fromIndex){
+        return ciService.verifyCi(ciService, "", page, pageSize);
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -47,8 +47,8 @@ public class CiController {
         return "wtf?";
     }
 
-    @PostMapping("/es/to/file")
-    public void saveToFile(@RequestParam Integer page, @RequestParam Integer pageSize){
-        ciService.outputJSONFromES(page, pageSize);
+    @PostMapping("/{fromIndex}/es/to/file")
+    public void saveToFile(@RequestParam Integer page, @RequestParam Integer pageSize, @PathVariable String fromIndex){
+        ciService.outputJSONFromES(fromIndex, page, pageSize);
     }
 }

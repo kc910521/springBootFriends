@@ -55,24 +55,27 @@ public class CiService {
         return ciRepository.findAllByParagraphsMatches(str);
     }
 
-    public void outputJSONFromES(int page, int pageSize) {
-        QPageRequest qPageRequest = new QPageRequest(page ,pageSize);
-        qPageRequest.getSortOr(Sort.by(Sort.Order.asc("id.keyword")));
-        Page<Ci> pag = ciRepository.findAll(qPageRequest);
+    public void outputJSONFromES(String fromFileIndex, int page, int pageSize) {
+//        QPageRequest qPageRequest = new QPageRequest(page ,pageSize);
+//        qPageRequest.getSortOr(Sort.by(Sort.Order.asc("id.keyword")));
+//        Page<Ci> pag = ciRepository.findAll(qPageRequest);
+        Page<Ci> cis = ciRepository.findByFromFileIndexEqualsOrderByOCodeAsc(fromFileIndex, new QPageRequest(page ,pageSize));
 //        Iterable<Ci> ciIterable = ciRepository.findAll();
         JSONArray jsonArray = new JSONArray();
         //FIX:keyouhua
-        pag.getContent().forEach(ci -> {
+        cis.getContent().stream().forEachOrdered(ci -> {
             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(ci);
             jsonObject.remove("id");
+            jsonObject.remove("fromFileIndex");
+            jsonObject.remove("oCode");
             jsonArray.add(jsonObject);
         });
-        WriteConfigJson(JsonFormatTool.formatJson(jsonArray.toJSONString()), ((page - 1) * pageSize) + "" );
+        WriteConfigJson(JsonFormatTool.formatJson(jsonArray.toJSONString()), fromFileIndex );
     }
 
     // justcopy
     private void WriteConfigJson(String args, String namePart) {
-        String src = "D:\\repo\\chinese-poetry\\ci\\cix\\ci." + namePart + ".json";
+        String src = "D:\\repo\\chinese-poetry\\ci\\cix\\ci.song." + namePart + ".json";
 
         File file = new File(src);
 
@@ -102,12 +105,13 @@ public class CiService {
 
     }
 
-    public String verifyCi(CiService ciService, int page, int pageSize) {
+    public synchronized String verifyCi(CiService ciService, String fromIndex, int page, int pageSize) {
         CiPipeLine.missCiIds.clear();
-        QPageRequest qPageRequest = new QPageRequest(page ,pageSize);
-        qPageRequest.getSortOr(Sort.by(Sort.Order.asc("id.keyword")));
-        Page<Ci> pag = ciRepository.findAll(qPageRequest);
-        pag.getContent().forEach(ci -> {
+//        QPageRequest qPageRequest = new QPageRequest(page ,pageSize);
+//        qPageRequest.getSortOr(Sort.by(Sort.Order.asc("id.keyword")));
+        Page<Ci> cis = ciRepository.findByFromFileIndexEqualsOrderByOCodeAsc(fromIndex, new QPageRequest(page ,pageSize));
+//        Page<Ci> pag = ciRepository.findAll(qPageRequest);
+        cis.getContent().forEach(ci -> {
             // TODO:可优化少去一次异常字符
             String url = assembleUrl(ci.getParagraphs());
             int ctc = CiPipeLine.countChar(ci.getParagraphs());
@@ -138,9 +142,10 @@ public class CiService {
     public int loadFromFiles(String absDirPath) throws IOException {
         Collection<File> files = FileUtils.listFiles(new File(absDirPath), FileFilterUtils.suffixFileFilter("json"), null);
         if (files != null && !files.isEmpty()) {
-            files.stream().forEach(file -> {
+            files.stream().forEachOrdered(file -> {
                 if (file.isFile() && file.exists() && file.getName().startsWith("ci.song")) {
-                    System.out.println(file.getName());
+                    String fileName = file.getName();
+                    System.out.println(fileName);
                     ObjectMapper mapper = new ObjectMapper();
                     List<Ci> cis = null;
                     try {
@@ -150,8 +155,11 @@ public class CiService {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    String fromFileIndex = fileName.replaceAll("ci\\.song\\.|\\.json", "");
                     cis.stream().forEach(ci -> {
                         ci.setId("ci_" + String.format("%06d", a++));
+                        ci.setoCode(ci.getId());
+                        ci.setFromFileIndex(fromFileIndex);
                         System.out.println(a);
                     });
                     ciRepository.saveAll(cis);
