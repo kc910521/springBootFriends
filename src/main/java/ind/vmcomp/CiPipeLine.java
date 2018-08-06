@@ -45,7 +45,7 @@ public class CiPipeLine implements Pipeline {
                 String[] resSentSpd = resT.trim().split("。");
                 List<String> pars = new LinkedList<>();
                 for (String as : resSentSpd){
-                    pars.add(as + "。");
+                    pars.add(as.trim() + "。");
                 }
                 ciService.putParasData(id, pars);
             }

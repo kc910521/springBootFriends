@@ -12,6 +12,8 @@ import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author CaiKun
@@ -55,6 +57,27 @@ public class AppTest {
     @Test
     public void outputFile(){
         ciService.outputJSONFromES("1000",0, 2000);
+    }
+
+    @Test
+    public void packageWork(){
+        List<String> workList = Arrays.asList(
+//                "2000", "3000", "4000",
+//                "5000", "6000",
+//                "7000",
+                "8000",
+                "9000", "10000",
+                "11000", "12000",
+                "13000", "14000",
+                "15000", "16000",
+                "17000", "18000",
+                "19000", "20000",
+                "21000"
+                );
+        workList.forEach(wPage -> {
+            ciService.verifyCi(ciService, wPage,0, 2000);
+            ciService.outputJSONFromES(wPage,0, 2000);
+        });
     }
 }
 
