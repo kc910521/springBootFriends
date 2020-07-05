@@ -39,8 +39,9 @@ public class CiController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String saveCi(){
         try {
-            int res = ciService.loadFromFiles("D:\\repo\\chinese-poetry\\ci");
-            return res + "";
+            List<Ci> cis = ciService.loadFromFiles("D:\\repo\\chinese-poetry\\ci");
+            ciService.saveAll(cis);
+            return "OK";
         } catch (IOException e) {
             e.printStackTrace();
         }

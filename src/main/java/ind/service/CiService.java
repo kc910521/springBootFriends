@@ -139,7 +139,8 @@ public class CiService {
         return "https://www.baidu.com/s?wd=" + stringBuilder;
     }
 
-    public int loadFromFiles(String absDirPath) throws IOException {
+    public List<Ci> loadFromFiles(String absDirPath) throws IOException {
+        final List<Ci> cisOuter = new LinkedList<>();
         Collection<File> files = FileUtils.listFiles(new File(absDirPath), FileFilterUtils.suffixFileFilter("json"), null);
         if (files != null && !files.isEmpty()) {
             files.stream().forEachOrdered(file -> {
@@ -157,17 +158,20 @@ public class CiService {
                     }
                     String fromFileIndex = fileName.replaceAll("ci\\.song\\.|\\.json", "");
                     cis.stream().forEach(ci -> {
-                        ci.setId("ci_" + String.format("%06d", a++));
+                        ci.setId("song_ci_" + String.format("%06d", a++));
                         ci.setoCode(ci.getId());
                         ci.setFromFileIndex(fromFileIndex);
-                        System.out.println(a);
                     });
-                    ciRepository.saveAll(cis);
+                    cisOuter.addAll(cis);
                 }
             });
-            return 0;
+            return cisOuter;
         }
-        return -1;
+        return cisOuter;
+    }
+
+    public void saveAll(List<Ci> cis) {
+        ciRepository.saveAll(cis);
     }
 
 }

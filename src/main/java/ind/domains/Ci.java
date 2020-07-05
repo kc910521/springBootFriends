@@ -13,14 +13,14 @@ import java.util.List;
  * @author BJQXDN0626
  * @create 2018/3/13
  */
-@Document(indexName = "ci_song_910521")
+@Document(indexName = "song_ci_idx1")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ci {
 
     @Id
     private String id;
 
-    @Field(type = FieldType.keyword)
+    @Field(type = FieldType.Keyword)
     private String oCode;
 
     private String author;
@@ -31,7 +31,7 @@ public class Ci {
 
     private List<String> tags;
 
-    @Field(type = FieldType.keyword)
+    @Field(type = FieldType.Keyword)
     private String fromFileIndex;
 
     public String getId() {

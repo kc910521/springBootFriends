@@ -34,10 +34,24 @@ public class AppTest {
     @Test
     public void load(){
         try {
-            int res = ciService.loadFromFiles("D:\\repo\\chinese-poetry\\ci");
+            List<Ci> cis = ciService.loadFromFiles("/Users/chunk/Documents/poetry/ci");
+            System.out.println(cis);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+
+    @Test
+    public void saveNLoad() {
+        try {
+            List<Ci> cis = ciService.loadFromFiles("/Users/chunk/Documents/poetry/ci");
+            ciService.saveAll(cis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Autowired
